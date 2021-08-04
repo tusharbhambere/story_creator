@@ -711,7 +711,7 @@ class _StoryCreatorState extends State<StoryCreator> {
 enum ItemType { Image, Text }
 
 class EditableItem {
-  Offset position = Offset(0.45, 0.45);
+  Offset position = Offset(0.4, 0.4);
   double scale = 1.0;
   double rotation = 0.0;
   ItemType? type;
