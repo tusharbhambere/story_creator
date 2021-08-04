@@ -14,9 +14,10 @@ dependencies:
 ```
 
 ## Use it like this
-
+``` dart
         File editedFile = await Navigator.of(context).push(
              MaterialPageRoute(builder: (context)=> StoryCreator(
               filePath: file.path,
             ))
         );
+```
