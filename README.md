@@ -1,4 +1,4 @@
-# story_designer
+# story_creator
 
 A package for creating instagram like story, you can use this package to edit images and make it story ready by adding other contents over it like text.
 
@@ -10,13 +10,13 @@ Add this to your package's pubspec.yaml file:
 
 ```
 dependencies:
-  story_designer: ^1.0.0
+  story_creator: ^1.0.0
 ```
 
 ## Use it like this
 
         File editedFile = await Navigator.of(context).push(
-            new MaterialPageRoute(builder: (context)=> StoryDesigner(
+             MaterialPageRoute(builder: (context)=> StoryCreator(
               filePath: file.path,
             ))
         );

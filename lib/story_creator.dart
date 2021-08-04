@@ -1,4 +1,4 @@
-library story_designer;
+library story_creator;
 
 import 'dart:io';
 import 'dart:typed_data';
@@ -12,32 +12,35 @@ import 'package:path_provider/path_provider.dart';
 
 import 'dart:ui' as ui;
 
-class StoryDesigner extends StatefulWidget {
-  StoryDesigner({Key key, this.filePath}) : super(key: key);
+class StoryCreator extends StatefulWidget {
+  StoryCreator({
+    Key? key,
+    required this.filePath,
+  }) : super(key: key);
 
   final String filePath;
 
   @override
-  _StoryDesignerState createState() => _StoryDesignerState();
+  _StoryCreatorState createState() => _StoryCreatorState();
 }
 
-class _StoryDesignerState extends State<StoryDesigner> {
+class _StoryCreatorState extends State<StoryCreator> {
   static GlobalKey previewContainer = new GlobalKey();
 
   // ActiceItem
-  EditableItem _activeItem;
+  EditableItem? _activeItem;
 
   // item initial position
-  Offset _initPos;
+  Offset? _initPos;
 
   // item current position
-  Offset _currentPos;
+  Offset? _currentPos;
 
   // item current scale
-  double _currentScale;
+  double? _currentScale;
 
   // item current rotation
-  double _currentRotation;
+  double? _currentRotation;
 
   // is item in action
   bool _inAction = false;
@@ -81,7 +84,8 @@ class _StoryDesignerState extends State<StoryDesigner> {
   void initState() {
     stackData.add(EditableItem()
       ..type = ItemType.Image
-      ..value = widget.filePath);
+      ..value = widget.filePath
+      ..position = Offset(0.0, 0.0));
 
     super.initState();
   }
@@ -97,20 +101,20 @@ class _StoryDesignerState extends State<StoryDesigner> {
           if (_activeItem == null) return;
 
           _initPos = details.focalPoint;
-          _currentPos = _activeItem.position;
-          _currentScale = _activeItem.scale;
-          _currentRotation = _activeItem.rotation;
+          _currentPos = _activeItem!.position;
+          _currentScale = _activeItem!.scale;
+          _currentRotation = _activeItem!.rotation;
         },
         onScaleUpdate: (details) {
           if (_activeItem == null) return;
-          final delta = details.focalPoint - _initPos;
-          final left = (delta.dx / screen.width) + _currentPos.dx;
-          final top = (delta.dy / screen.height) + _currentPos.dy;
+          final delta = details.focalPoint - _initPos!;
+          final left = (delta.dx / screen.width) + _currentPos!.dx;
+          final top = (delta.dy / screen.height) + _currentPos!.dy;
 
           setState(() {
-            _activeItem.position = Offset(left, top);
-            _activeItem.rotation = details.rotation + _currentRotation;
-            _activeItem.scale = details.scale * _currentScale;
+            _activeItem!.position = Offset(left, top);
+            _activeItem!.rotation = details.rotation + _currentRotation!;
+            _activeItem!.scale = details.scale * _currentScale!;
           });
         },
         onTap: () {
@@ -139,12 +143,15 @@ class _StoryDesignerState extends State<StoryDesigner> {
               child: Stack(
                 children: [
                   Container(color: Colors.black54),
-                  Visibility(
-                    visible: stackData[0].type == ItemType.Image,
-                    child: Center(
-                      child: Image.file(new File(stackData[0].value)),
-                    ),
-                  ),
+                  // Visibility(
+                  //   visible: stackData[0].type == ItemType.Image,
+                  //   child: Center(
+                  //     child: Image.file(
+                  //       File(stackData[0].value!),
+                  //       fit: BoxFit.cover,
+                  //     ),
+                  //   ),
+                  // ),
                   ...stackData.map(_buildItemWidget).toList(),
                   Visibility(
                     visible: isTextInput,
@@ -269,7 +276,8 @@ class _StoryDesignerState extends State<StoryDesigner> {
                                                   child: const Text('Got it'),
                                                   onPressed: () {
                                                     setState(() {
-                                                      currentColor = pickerColor;
+                                                      currentColor =
+                                                          pickerColor;
                                                     });
                                                     Navigator.of(ctx).pop();
                                                   },
@@ -323,31 +331,32 @@ class _StoryDesignerState extends State<StoryDesigner> {
                                 ),
                               )),
                           Positioned(
-                              top: screen.height / 2 - 45,
-                              left: -120,
-                              child: Transform(
-                                alignment: FractionalOffset.center,
-                                // Rotate sliders by 90 degrees
-                                transform: new Matrix4.identity()
-                                  ..rotateZ(270 * 3.1415927 / 180),
-                                child: SizedBox(
-                                  width: 300,
-                                  child: Slider(
-                                      value: currentFontSize,
-                                      min: 14,
-                                      max: 74,
-                                      activeColor: Colors.white,
-                                      inactiveColor:
-                                          Colors.white.withOpacity(0.4),
-                                      onChanged: (input) {
-                                        setState(() {
-                                          currentFontSize = input;
-                                        });
-                                      }),
-                                ),
-                              )),
+                            top: screen.height / 2 - 45,
+                            left: -120,
+                            child: Transform(
+                              alignment: FractionalOffset.center,
+                              // Rotate sliders by 90 degrees
+                              transform: Matrix4.identity()
+                                ..rotateZ(270 * 3.1415927 / 180),
+                              child: SizedBox(
+                                width: 300,
+                                child: Slider(
+                                    value: currentFontSize,
+                                    min: 14,
+                                    max: 74,
+                                    activeColor: Colors.white,
+                                    inactiveColor:
+                                        Colors.white.withOpacity(0.4),
+                                    onChanged: (input) {
+                                      setState(() {
+                                        currentFontSize = input;
+                                      });
+                                    }),
+                              ),
+                            ),
+                          ),
                           Positioned(
-                            bottom: 50,
+                            bottom: screen.height / 2.75,
                             left: screen.width / 6,
                             child: Center(
                               child: Container(
@@ -407,19 +416,23 @@ class _StoryDesignerState extends State<StoryDesigner> {
                 child: Positioned(
                     top: 50,
                     right: 20,
-                    child: FlatButton(
+                    child: TextButton(
                       onPressed: () async {
                         //done: save image and return captured image to previous screen
 
                         RenderRepaintBoundary boundary =
-                            previewContainer.currentContext.findRenderObject();
-                        ui.Image image = await boundary.toImage();
+                            previewContainer.currentContext!.findRenderObject()
+                                as RenderRepaintBoundary;
+                        ui.Image image = await boundary.toImage(
+                          pixelRatio: 2.0,
+                        );
                         final directory =
                             (await getApplicationDocumentsDirectory()).path;
-                        ByteData byteData = await image.toByteData(
-                            format: ui.ImageByteFormat.png);
-                        Uint8List pngBytes = byteData.buffer.asUint8List();
-                        print(pngBytes);
+                        ByteData? byteData = await image.toByteData(
+                          format: ui.ImageByteFormat.png,
+                        );
+                        Uint8List pngBytes = byteData!.buffer.asUint8List();
+                        // print(pngBytes);
 
                         File imgFile = new File(
                             '$directory/' + DateTime.now().toString() + '.png');
@@ -428,12 +441,18 @@ class _StoryDesignerState extends State<StoryDesigner> {
                           Navigator.of(context).pop(imgFile);
                         });
                       },
-                      shape: RoundedRectangleBorder(
-                        borderRadius: BorderRadius.all(
-                          Radius.circular(10),
+                      style: ButtonStyle(
+                        shape: MaterialStateProperty.all(
+                          RoundedRectangleBorder(
+                            borderRadius: BorderRadius.all(
+                              Radius.circular(10),
+                            ),
+                          ),
+                        ),
+                        backgroundColor: MaterialStateProperty.all(
+                          Colors.black.withOpacity(0.7),
                         ),
                       ),
-                      color: Colors.black.withOpacity(0.7),
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
@@ -495,8 +514,8 @@ class _StoryDesignerState extends State<StoryDesigner> {
       case ItemType.Text:
         if (e.textStyle == 0) {
           widget = Text(
-            e.value,
-            style: GoogleFonts.getFont(fontFamilyList[e.fontFamily]).copyWith(
+            e.value!,
+            style: GoogleFonts.getFont(fontFamilyList[e.fontFamily!]).copyWith(
               color: e.color,
               fontSize: e.fontSize,
             ),
@@ -511,8 +530,9 @@ class _StoryDesignerState extends State<StoryDesigner> {
               ),
             ),
             child: Text(
-              e.value,
-              style: GoogleFonts.getFont(fontFamilyList[e.fontFamily]).copyWith(
+              e.value!,
+              style:
+                  GoogleFonts.getFont(fontFamilyList[e.fontFamily!]).copyWith(
                 color: e.color,
                 fontSize: e.fontSize,
               ),
@@ -528,8 +548,9 @@ class _StoryDesignerState extends State<StoryDesigner> {
               ),
             ),
             child: Text(
-              e.value,
-              style: GoogleFonts.getFont(fontFamilyList[e.fontFamily]).copyWith(
+              e.value!,
+              style:
+                  GoogleFonts.getFont(fontFamilyList[e.fontFamily!]).copyWith(
                 color: e.color,
                 fontSize: e.fontSize,
               ),
@@ -537,8 +558,8 @@ class _StoryDesignerState extends State<StoryDesigner> {
           );
         } else {
           widget = Text(
-            e.value,
-            style: GoogleFonts.getFont(fontFamilyList[e.fontFamily]).copyWith(
+            e.value!,
+            style: GoogleFonts.getFont(fontFamilyList[e.fontFamily!]).copyWith(
               color: e.color,
               fontSize: e.fontSize,
             ),
@@ -546,85 +567,157 @@ class _StoryDesignerState extends State<StoryDesigner> {
         }
         break;
       case ItemType.Image:
-        widget = Center();
+        widget = Center(
+          child: Image.file(
+            File(stackData[0].value!),
+            // fit: BoxFit.fitHeight,
+          ),
+        );
+        break;
+      case null:
+        break;
     }
 
     // e.position = Offset(centerHeightPosition, centerWidthPosition);
 
-    return Positioned(
-      top: e.position.dy * screen.height,
-      left: e.position.dx * screen.width,
-      child: Transform.scale(
-        scale: e.scale,
-        child: Transform.rotate(
-          angle: e.rotation,
-          child: Listener(
-            onPointerDown: (details) {
-              if (e.type != ItemType.Image) {
-                if (_inAction) return;
-                _inAction = true;
-                _activeItem = e;
-                _initPos = details.position;
-                _currentPos = e.position;
-                _currentScale = e.scale;
-                _currentRotation = e.rotation;
-              }
-            },
-            onPointerUp: (details) {
-              _inAction = false;
-              print("e.position.dy: " + e.position.dy.toString());
-              print("e.position.dx: " + e.position.dx.toString());
-              if (e.position.dy >= 0.8 &&
-                  e.position.dx >= 0.0 &&
-                  e.position.dx <= 1.0) {
-                print('Delete the Item');
+    return e.type == ItemType.Text
+        ? Positioned(
+            top: e.position.dy * screen.height,
+            left: e.position.dx * screen.width,
+            child: Transform.scale(
+              scale: e.scale,
+              child: Transform.rotate(
+                angle: e.rotation,
+                child: Listener(
+                  onPointerDown: (details) {
+                    // if (e.type != ItemType.Image) {
+                    if (_inAction) return;
+                    _inAction = true;
+                    _activeItem = e;
+                    _initPos = details.position;
+                    _currentPos = e.position;
+                    _currentScale = e.scale;
+                    _currentRotation = e.rotation;
+                    // }
+                  },
+                  onPointerUp: (details) {
+                    _inAction = false;
+                    // print("e.position.dy: " + e.position.dy.toString());
+                    // print("e.position.dx: " + e.position.dx.toString());
+                    if (e.position.dy >= 0.8 &&
+                        e.position.dx >= 0.0 &&
+                        e.position.dx <= 1.0) {
+                      // print('Delete the Item');
 
-                setState(() {
-                  stackData.removeAt(stackData.indexOf(e));
-                  _activeItem = null;
-                });
-              }
+                      setState(() {
+                        stackData.removeAt(stackData.indexOf(e));
+                        _activeItem = null;
+                      });
+                    }
 
-              setState(() {
-                _activeItem = null;
-              });
-            },
-            onPointerCancel: (details) {},
-            onPointerMove: (details) {
-              print("e.position.dy: " + e.position.dy.toString());
-              print("e.position.dx: " + e.position.dx.toString());
-              if (e.position.dy >= 0.8 &&
-                  e.position.dx >= 0.0 &&
-                  e.position.dx <= 1.0) {
-                print('Delete the Item');
+                    setState(() {
+                      _activeItem = null;
+                    });
+                  },
+                  onPointerCancel: (details) {},
+                  onPointerMove: (details) {
+                    //print("e.position.dy: " + e.position.dy.toString());
+                    // print("e.position.dx: " + e.position.dx.toString());
+                    if (e.position.dy >= 0.8 &&
+                        e.position.dx >= 0.0 &&
+                        e.position.dx <= 1.0) {
+                      // print('Delete the Item');
 
-                setState(() {
-                  isDeletePosition = true;
-                });
-              } else {
-                setState(() {
-                  isDeletePosition = false;
-                });
-              }
-            },
-            child: widget,
-          ),
-        ),
-      ),
-    );
+                      setState(() {
+                        isDeletePosition = true;
+                      });
+                    } else {
+                      setState(() {
+                        isDeletePosition = false;
+                      });
+                    }
+                  },
+                  child: widget,
+                ),
+              ),
+            ),
+          )
+        : Positioned(
+            child: Transform.translate(
+              offset: Offset(
+                e.position.dx * screen.width,
+                e.position.dy * screen.height,
+              ),
+              child: Transform.scale(
+                scale: e.scale,
+                child: Transform.rotate(
+                  angle: e.rotation,
+                  child: Listener(
+                    onPointerDown: (details) {
+                      if (_inAction) return;
+                      _inAction = true;
+                      _activeItem = e;
+                      _initPos = details.position;
+                      _currentPos = e.position;
+                      _currentScale = e.scale;
+                      _currentRotation = e.rotation;
+                    },
+                    onPointerUp: (details) {
+                      _inAction = false;
+                      // print("e.position.dy: " + e.position.dy.toString());
+                      // print("e.position.dx: " + e.position.dx.toString());
+                      if (e.position.dy >= 0.8 &&
+                          e.position.dx >= 0.0 &&
+                          e.position.dx <= 1.0) {
+                        // print('Delete the Item');
+
+                        setState(() {
+                          stackData.removeAt(stackData.indexOf(e));
+                          _activeItem = null;
+                        });
+                      }
+
+                      setState(() {
+                        _activeItem = null;
+                      });
+                    },
+                    onPointerCancel: (details) {},
+                    onPointerMove: (details) {
+                      // print("e.position.dy: " + e.position.dy.toString());
+                      // print("e.position.dx: " + e.position.dx.toString());
+                      if (e.position.dy >= 0.8 &&
+                          e.position.dx >= 0.0 &&
+                          e.position.dx <= 1.0) {
+                        // print('Delete the Item');
+
+                        setState(() {
+                          isDeletePosition = true;
+                        });
+                      } else {
+                        setState(() {
+                          isDeletePosition = false;
+                        });
+                      }
+                    },
+                    child: widget,
+                  ),
+                ),
+              ),
+            ),
+          );
   }
 }
 
 enum ItemType { Image, Text }
 
 class EditableItem {
-  Offset position = Offset(0.4, 0.4);
+  Offset position = Offset(0.45, 0.45);
   double scale = 1.0;
   double rotation = 0.0;
-  ItemType type;
-  String value;
-  Color color;
-  int textStyle;
-  double fontSize;
-  int fontFamily;
+  ItemType? type;
+  String? value;
+  Color? color;
+  int? textStyle;
+  double? fontSize;
+  int? fontFamily;
 }

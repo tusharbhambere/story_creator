@@ -1,12 +1,10 @@
-name: story_designer
+name: story_creator
 description: A package for creating instagram like story, you can use this package to edit images and make it story ready by adding other contents over it like text.
 version: 1.0.0
-homepage: https://github.com/mrgulshanyadav/story_designer
+homepage: https://github.com/tjcampanella/story_creator
 
 environment:
-  sdk: ">=2.7.0 <3.0.0"
-  flutter: ">2.0.0"
-
+  sdk: '>=2.12.0 <3.0.0'
 dependencies:
   flutter:
     sdk: flutter
@@ -20,7 +18,7 @@ dependencies:
 dev_dependencies:
   flutter_test:
     sdk: flutter
-
+  flutter_lints:
 # For information on the generic Dart part of this file, see the
 # following page: https://dart.dev/tools/pub/pubspec
 

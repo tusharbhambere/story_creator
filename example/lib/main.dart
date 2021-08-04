@@ -1,13 +1,15 @@
 import 'dart:io';
-
 import 'package:flutter/material.dart';
 import 'package:image_picker/image_picker.dart';
-import 'package:story_designer/story_designer.dart';
+import 'package:story_creator/story_creator.dart';
 
 void main() {
-  runApp(new MaterialApp(
-    debugShowCheckedModeBanner: false,
-    home: MyApp(),));
+  runApp(
+    new MaterialApp(
+      debugShowCheckedModeBanner: false,
+      home: MyApp(),
+    ),
+  );
 }
 
 class MyApp extends StatefulWidget {
@@ -16,40 +18,47 @@ class MyApp extends StatefulWidget {
 }
 
 class _MyAppState extends State<MyApp> {
+  File? editedFile;
+
   @override
   Widget build(BuildContext context) {
-
-
     return Scaffold(
-      appBar: AppBar(title: Text('Story Designer Example'),),
+      appBar: AppBar(
+        title: Text('Story Creator Example'),
+      ),
       body: Center(
-        child: Column(
-          mainAxisAlignment: MainAxisAlignment.center,
-          crossAxisAlignment: CrossAxisAlignment.center,
+        child: Stack(
+          alignment: Alignment.center,
+          // mainAxisAlignment: MainAxisAlignment.center,
+          // crossAxisAlignment: CrossAxisAlignment.center,
           children: [
-            RaisedButton(
+            editedFile != null
+                ? Image.file(
+                    editedFile!,
+                    fit: BoxFit.cover,
+                  )
+                : SizedBox.shrink(),
+            TextButton(
               onPressed: () async {
-
                 final picker = ImagePicker();
-                await picker.getImage(source: ImageSource.gallery).then((file) async {
-
-                  File editedFile = await Navigator.of(context).push(
-                      new MaterialPageRoute(builder: (context)=> StoryDesigner(
-                        filePath: file.path,
-                      ))
+                await picker
+                    .pickImage(source: ImageSource.gallery)
+                    .then((file) async {
+                  editedFile = await Navigator.of(context).push(
+                    MaterialPageRoute(
+                      builder: (context) => StoryCreator(
+                        filePath: file!.path,
+                      ),
+                    ),
                   );
 
                   // ------- you have editedFile
 
-                  if(editedFile!=null) {
-                    print('editedFile: ' + editedFile.path);
-
-
-
+                  if (editedFile != null) {
+                    print('editedFile: ' + editedFile!.path);
+                    setState(() {});
                   }
-
                 });
-
               },
               child: Text('Pick Image'),
             ),
