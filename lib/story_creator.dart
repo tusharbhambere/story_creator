@@ -25,7 +25,7 @@ class StoryCreator extends StatefulWidget {
 }
 
 class _StoryCreatorState extends State<StoryCreator> {
-  static GlobalKey previewContainer = new GlobalKey();
+  static GlobalKey previewContainer = GlobalKey();
 
   // ActiceItem
   EditableItem? _activeItem;
@@ -196,13 +196,13 @@ class _StoryCreatorState extends State<StoryCreator> {
                                   maxLines: 3,
                                   minLines: 1,
                                   decoration: InputDecoration(
-                                    border: new UnderlineInputBorder(
-                                      borderSide: new BorderSide(
+                                    border: UnderlineInputBorder(
+                                      borderSide: BorderSide(
                                         color: Colors.transparent,
                                       ),
                                     ),
-                                    focusedBorder: new UnderlineInputBorder(
-                                      borderSide: new BorderSide(
+                                    focusedBorder: UnderlineInputBorder(
+                                      borderSide: BorderSide(
                                         color: Colors.transparent,
                                       ),
                                     ),
@@ -426,15 +426,14 @@ class _StoryCreatorState extends State<StoryCreator> {
                         ui.Image image = await boundary.toImage(
                           pixelRatio: 2.0,
                         );
-                        final directory =
-                            (await getApplicationDocumentsDirectory()).path;
+                        final directory = (await getTemporaryDirectory()).path;
                         ByteData? byteData = await image.toByteData(
                           format: ui.ImageByteFormat.png,
                         );
                         Uint8List pngBytes = byteData!.buffer.asUint8List();
                         // print(pngBytes);
 
-                        File imgFile = new File(
+                        File imgFile = File(
                             '$directory/' + DateTime.now().toString() + '.png');
                         imgFile.writeAsBytes(pngBytes).then((value) {
                           // done: return imgFile
