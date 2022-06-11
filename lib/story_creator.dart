@@ -11,13 +11,15 @@ import 'package:path_provider/path_provider.dart';
 
 import 'dart:ui' as ui;
 
+// Widget for creating a story editor from a filePath.
 class StoryCreator extends StatefulWidget {
+  /// Path of the story to edit.
+  final String filePath;
+
   const StoryCreator({
     Key? key,
     required this.filePath,
   }) : super(key: key);
-
-  final String filePath;
 
   @override
   _StoryCreatorState createState() => _StoryCreatorState();
@@ -26,42 +28,46 @@ class StoryCreator extends StatefulWidget {
 class _StoryCreatorState extends State<StoryCreator> {
   static GlobalKey previewContainer = GlobalKey();
 
-  // ActiceItem
+  /// ActiveItem
   EditableItem? _activeItem;
 
-  // item initial position
+  /// item initial position
   Offset? _initPos;
 
-  // item current position
+  /// item current position
   Offset? _currentPos;
 
-  // item current scale
+  /// item current scale
   double? _currentScale;
 
-  // item current rotation
+  /// item current rotation
   double? _currentRotation;
 
-  // is item in action
+  /// is item in action or currently moving etc
   bool _inAction = false;
 
-  // List of all editableitems
+  /// List of all editableitems
   List<EditableItem> stackData = [];
 
-  // is textfield shown
+  /// is textfield shown
   bool isTextInput = false;
-  // current textfield text
+
+  /// current textfield text
   String currentText = "";
-  // current textfield color
+
+  /// current textfield color
   Color currentColor = const Color(0xffffffff);
-  // current textfield colorpicker color
+
+  /// current textfield colorpicker color
   Color pickerColor = const Color(0xffffffff);
 
-  // current textfield style
+  /// current textfield style
   int currentTextStyle = 0;
-  // current textfield fontsize
+
+  /// current textfield fontsize
   double currentFontSize = 26.0;
 
-  // current textfield fontfamily list
+  /// current textfield fontfamily list
   List<String> fontFamilyList = [
     "Lato",
     "Montserrat",
@@ -73,10 +79,11 @@ class _StoryCreatorState extends State<StoryCreator> {
     "Noto Serif",
     "Anton"
   ];
-  // current textfield fontfamily
+
+  /// current textfield fontfamily
   int currentFontFamily = 0;
 
-  // is activeitem moved to delete position
+  /// is activeitem moved to delete position
   bool isDeletePosition = false;
 
   @override
@@ -142,15 +149,6 @@ class _StoryCreatorState extends State<StoryCreator> {
               child: Stack(
                 children: [
                   Container(color: Colors.black54),
-                  // Visibility(
-                  //   visible: stackData[0].type == ItemType.Image,
-                  //   child: Center(
-                  //     child: Image.file(
-                  //       File(stackData[0].value!),
-                  //       fit: BoxFit.cover,
-                  //     ),
-                  //   ),
-                  // ),
                   ...stackData.map(_buildItemWidget).toList(),
                   Visibility(
                     visible: isTextInput,
@@ -419,8 +417,6 @@ class _StoryCreatorState extends State<StoryCreator> {
                     right: 20,
                     child: TextButton(
                       onPressed: () async {
-                        //done: save image and return captured image to previous screen
-
                         RenderRepaintBoundary boundary =
                             previewContainer.currentContext!.findRenderObject()
                                 as RenderRepaintBoundary;
@@ -432,12 +428,12 @@ class _StoryCreatorState extends State<StoryCreator> {
                           format: ui.ImageByteFormat.png,
                         );
                         Uint8List pngBytes = byteData!.buffer.asUint8List();
-                        // print(pngBytes);
 
                         File imgFile = File(
-                            '$directory/' + DateTime.now().toString() + '.png');
+                          '$directory/' + DateTime.now().toString() + '.png',
+                        );
+
                         imgFile.writeAsBytes(pngBytes).then((value) {
-                          // done: return imgFile
                           Navigator.of(context).pop(imgFile);
                         });
                       },
@@ -506,8 +502,6 @@ class _StoryCreatorState extends State<StoryCreator> {
 
   Widget _buildItemWidget(EditableItem e) {
     final screen = MediaQuery.of(context).size;
-    // double centerHeightPosition = screen.height/2;
-    // double centerWidthPosition = screen.width/2;
 
     Widget? widget;
     switch (e.type) {
@@ -590,7 +584,6 @@ class _StoryCreatorState extends State<StoryCreator> {
                 angle: e.rotation,
                 child: Listener(
                   onPointerDown: (details) {
-                    // if (e.type != ItemType.Image) {
                     if (_inAction) return;
                     _inAction = true;
                     _activeItem = e;
@@ -602,13 +595,9 @@ class _StoryCreatorState extends State<StoryCreator> {
                   },
                   onPointerUp: (details) {
                     _inAction = false;
-                    // print("e.position.dy: " + e.position.dy.toString());
-                    // print("e.position.dx: " + e.position.dx.toString());
                     if (e.position.dy >= 0.8 &&
                         e.position.dx >= 0.0 &&
                         e.position.dx <= 1.0) {
-                      // print('Delete the Item');
-
                       setState(() {
                         stackData.removeAt(stackData.indexOf(e));
                         _activeItem = null;
@@ -621,13 +610,9 @@ class _StoryCreatorState extends State<StoryCreator> {
                   },
                   onPointerCancel: (details) {},
                   onPointerMove: (details) {
-                    //print("e.position.dy: " + e.position.dy.toString());
-                    // print("e.position.dx: " + e.position.dx.toString());
                     if (e.position.dy >= 0.8 &&
                         e.position.dx >= 0.0 &&
                         e.position.dx <= 1.0) {
-                      // print('Delete the Item');
-
                       setState(() {
                         isDeletePosition = true;
                       });
@@ -664,13 +649,9 @@ class _StoryCreatorState extends State<StoryCreator> {
                     },
                     onPointerUp: (details) {
                       _inAction = false;
-                      // print("e.position.dy: " + e.position.dy.toString());
-                      // print("e.position.dx: " + e.position.dx.toString());
                       if (e.position.dy >= 0.8 &&
                           e.position.dx >= 0.0 &&
                           e.position.dx <= 1.0) {
-                        // print('Delete the Item');
-
                         setState(() {
                           stackData.removeAt(stackData.indexOf(e));
                           _activeItem = null;
@@ -683,13 +664,9 @@ class _StoryCreatorState extends State<StoryCreator> {
                     },
                     onPointerCancel: (details) {},
                     onPointerMove: (details) {
-                      // print("e.position.dy: " + e.position.dy.toString());
-                      // print("e.position.dx: " + e.position.dx.toString());
                       if (e.position.dy >= 0.8 &&
                           e.position.dx >= 0.0 &&
                           e.position.dx <= 1.0) {
-                        // print('Delete the Item');
-
                         setState(() {
                           isDeletePosition = true;
                         });
@@ -710,6 +687,7 @@ class _StoryCreatorState extends State<StoryCreator> {
 
 enum ItemType { image, text }
 
+/// Encodes an item that can edited in a story
 class EditableItem {
   Offset position = const Offset(0.4, 0.4);
   double scale = 1.0;
