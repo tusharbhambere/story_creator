@@ -5,7 +5,6 @@ import 'dart:typed_data';
 
 import 'package:flutter/material.dart';
 import 'package:flutter/rendering.dart';
-import 'package:flutter/widgets.dart';
 import 'package:flutter_colorpicker/flutter_colorpicker.dart';
 import 'package:google_fonts/google_fonts.dart';
 import 'package:path_provider/path_provider.dart';
@@ -13,7 +12,7 @@ import 'package:path_provider/path_provider.dart';
 import 'dart:ui' as ui;
 
 class StoryCreator extends StatefulWidget {
-  StoryCreator({
+  const StoryCreator({
     Key? key,
     required this.filePath,
   }) : super(key: key);
@@ -53,9 +52,9 @@ class _StoryCreatorState extends State<StoryCreator> {
   // current textfield text
   String currentText = "";
   // current textfield color
-  Color currentColor = Color(0xffffffff);
+  Color currentColor = const Color(0xffffffff);
   // current textfield colorpicker color
-  Color pickerColor = Color(0xffffffff);
+  Color pickerColor = const Color(0xffffffff);
 
   // current textfield style
   int currentTextStyle = 0;
@@ -83,9 +82,9 @@ class _StoryCreatorState extends State<StoryCreator> {
   @override
   void initState() {
     stackData.add(EditableItem()
-      ..type = ItemType.Image
+      ..type = ItemType.image
       ..value = widget.filePath
-      ..position = Offset(0.0, 0.0));
+      ..position = const Offset(0.0, 0.0));
 
     super.initState();
   }
@@ -126,7 +125,7 @@ class _StoryCreatorState extends State<StoryCreator> {
           if (currentText.isNotEmpty) {
             setState(() {
               stackData.add(EditableItem()
-                ..type = ItemType.Text
+                ..type = ItemType.text
                 ..value = currentText
                 ..color = currentColor
                 ..textStyle = currentTextStyle
@@ -166,23 +165,23 @@ class _StoryCreatorState extends State<StoryCreator> {
                               width: screen.width / 1.5,
                               child: Container(
                                 padding: currentTextStyle != 0
-                                    ? EdgeInsets.only(
+                                    ? const EdgeInsets.only(
                                         left: 7,
                                         right: 7,
                                         top: 5,
                                         bottom: 5,
                                       )
-                                    : EdgeInsets.all(0),
+                                    : const EdgeInsets.all(0),
                                 decoration: currentTextStyle != 0
                                     ? BoxDecoration(
                                         color: currentTextStyle == 1
                                             ? Colors.black.withOpacity(1.0)
                                             : Colors.white.withOpacity(1.0),
-                                        borderRadius: BorderRadius.all(
+                                        borderRadius: const BorderRadius.all(
                                           Radius.circular(4),
                                         ),
                                       )
-                                    : BoxDecoration(),
+                                    : const BoxDecoration(),
                                 child: TextField(
                                   autofocus: true,
                                   textAlign: TextAlign.center,
@@ -195,7 +194,7 @@ class _StoryCreatorState extends State<StoryCreator> {
                                   cursorColor: currentColor,
                                   maxLines: 3,
                                   minLines: 1,
-                                  decoration: InputDecoration(
+                                  decoration: const InputDecoration(
                                     border: UnderlineInputBorder(
                                       borderSide: BorderSide(
                                         color: Colors.transparent,
@@ -216,7 +215,7 @@ class _StoryCreatorState extends State<StoryCreator> {
                                     if (input.isNotEmpty) {
                                       setState(() {
                                         stackData.add(EditableItem()
-                                          ..type = ItemType.Text
+                                          ..type = ItemType.text
                                           ..value = currentText
                                           ..color = currentColor
                                           ..textStyle = currentTextStyle
@@ -249,7 +248,8 @@ class _StoryCreatorState extends State<StoryCreator> {
                                   mainAxisAlignment: MainAxisAlignment.center,
                                   children: [
                                     IconButton(
-                                      icon: Icon(Icons.color_lens_outlined,
+                                      icon: const Icon(
+                                          Icons.color_lens_outlined,
                                           color: Colors.white),
                                       onPressed: () {
                                         // raise the [showDialog] widget
@@ -267,7 +267,6 @@ class _StoryCreatorState extends State<StoryCreator> {
                                                       pickerColor = color;
                                                     });
                                                   },
-                                                  showLabel: true,
                                                   pickerAreaHeightPercent: 0.8,
                                                 ),
                                               ),
@@ -291,13 +290,13 @@ class _StoryCreatorState extends State<StoryCreator> {
                                     IconButton(
                                       icon: Container(
                                         padding: currentTextStyle != 0
-                                            ? EdgeInsets.only(
+                                            ? const EdgeInsets.only(
                                                 left: 7,
                                                 right: 7,
                                                 top: 5,
                                                 bottom: 5,
                                               )
-                                            : EdgeInsets.all(0),
+                                            : const EdgeInsets.all(0),
                                         decoration: currentTextStyle != 0
                                             ? BoxDecoration(
                                                 color: currentTextStyle == 1
@@ -305,11 +304,12 @@ class _StoryCreatorState extends State<StoryCreator> {
                                                         .withOpacity(1.0)
                                                     : Colors.white
                                                         .withOpacity(1.0),
-                                                borderRadius: BorderRadius.all(
+                                                borderRadius:
+                                                    const BorderRadius.all(
                                                   Radius.circular(4),
                                                 ),
                                               )
-                                            : BoxDecoration(),
+                                            : const BoxDecoration(),
                                         child: Icon(Icons.auto_awesome,
                                             color: currentTextStyle != 2
                                                 ? Colors.white
@@ -382,7 +382,8 @@ class _StoryCreatorState extends State<StoryCreator> {
                                             color: index == currentFontFamily
                                                 ? Colors.white
                                                 : Colors.black,
-                                            borderRadius: BorderRadius.all(
+                                            borderRadius:
+                                                const BorderRadius.all(
                                               Radius.circular(20),
                                             ),
                                           ),
@@ -442,7 +443,7 @@ class _StoryCreatorState extends State<StoryCreator> {
                       },
                       style: ButtonStyle(
                         shape: MaterialStateProperty.all(
-                          RoundedRectangleBorder(
+                          const RoundedRectangleBorder(
                             borderRadius: BorderRadius.all(
                               Radius.circular(10),
                             ),
@@ -455,7 +456,7 @@ class _StoryCreatorState extends State<StoryCreator> {
                       child: Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: [
+                        children: const [
                           Text(
                             'Done',
                             style: TextStyle(
@@ -474,7 +475,7 @@ class _StoryCreatorState extends State<StoryCreator> {
                 visible: _activeItem != null,
                 child: Positioned(
                   bottom: 50,
-                  child: Container(
+                  child: SizedBox(
                     width: screen.width,
                     child: Center(
                       child: Container(
@@ -508,9 +509,9 @@ class _StoryCreatorState extends State<StoryCreator> {
     // double centerHeightPosition = screen.height/2;
     // double centerWidthPosition = screen.width/2;
 
-    var widget;
+    Widget? widget;
     switch (e.type) {
-      case ItemType.Text:
+      case ItemType.text:
         if (e.textStyle == 0) {
           widget = Text(
             e.value!,
@@ -521,10 +522,11 @@ class _StoryCreatorState extends State<StoryCreator> {
           );
         } else if (e.textStyle == 1) {
           widget = Container(
-            padding: EdgeInsets.only(left: 7, right: 7, top: 5, bottom: 5),
+            padding:
+                const EdgeInsets.only(left: 7, right: 7, top: 5, bottom: 5),
             decoration: BoxDecoration(
               color: Colors.black.withOpacity(1.0),
-              borderRadius: BorderRadius.all(
+              borderRadius: const BorderRadius.all(
                 Radius.circular(4),
               ),
             ),
@@ -539,10 +541,11 @@ class _StoryCreatorState extends State<StoryCreator> {
           );
         } else if (e.textStyle == 2) {
           widget = Container(
-            padding: EdgeInsets.only(left: 7, right: 7, top: 5, bottom: 5),
+            padding:
+                const EdgeInsets.only(left: 7, right: 7, top: 5, bottom: 5),
             decoration: BoxDecoration(
               color: Colors.white.withOpacity(1.0),
-              borderRadius: BorderRadius.all(
+              borderRadius: const BorderRadius.all(
                 Radius.circular(4),
               ),
             ),
@@ -565,7 +568,7 @@ class _StoryCreatorState extends State<StoryCreator> {
           );
         }
         break;
-      case ItemType.Image:
+      case ItemType.image:
         widget = Center(
           child: Image.file(
             File(stackData[0].value!),
@@ -577,9 +580,7 @@ class _StoryCreatorState extends State<StoryCreator> {
         break;
     }
 
-    // e.position = Offset(centerHeightPosition, centerWidthPosition);
-
-    return e.type == ItemType.Text
+    return e.type == ItemType.text
         ? Positioned(
             top: e.position.dy * screen.height,
             left: e.position.dx * screen.width,
@@ -707,10 +708,10 @@ class _StoryCreatorState extends State<StoryCreator> {
   }
 }
 
-enum ItemType { Image, Text }
+enum ItemType { image, text }
 
 class EditableItem {
-  Offset position = Offset(0.4, 0.4);
+  Offset position = const Offset(0.4, 0.4);
   double scale = 1.0;
   double rotation = 0.0;
   ItemType? type;
