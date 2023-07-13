@@ -22,7 +22,7 @@ class StoryCreator extends StatefulWidget {
   }) : super(key: key);
 
   @override
-  _StoryCreatorState createState() => _StoryCreatorState();
+  State<StoryCreator> createState() => _StoryCreatorState();
 }
 
 class _StoryCreatorState extends State<StoryCreator> {
@@ -430,7 +430,7 @@ class _StoryCreatorState extends State<StoryCreator> {
                         Uint8List pngBytes = byteData!.buffer.asUint8List();
 
                         File imgFile = File(
-                          '$directory/' + DateTime.now().toString() + '.png',
+                          '$directory/${DateTime.now()}.png',
                         );
 
                         imgFile.writeAsBytes(pngBytes).then((value) {
@@ -449,10 +449,10 @@ class _StoryCreatorState extends State<StoryCreator> {
                           Colors.black.withOpacity(0.7),
                         ),
                       ),
-                      child: Row(
+                      child: const Row(
                         crossAxisAlignment: CrossAxisAlignment.center,
                         mainAxisAlignment: MainAxisAlignment.center,
-                        children: const [
+                        children: [
                           Text(
                             'Done',
                             style: TextStyle(

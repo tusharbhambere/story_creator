@@ -1,20 +1,20 @@
 name: story_creator
 description: A package for creating instagram like story, you can use this package to edit images and make it story ready by adding other contents over it like text.
-version: 1.0.1
+version: 1.0.2
 homepage: https://github.com/tjcampanella/story_creator
 
 environment:
-  sdk: ">=2.12.0 <3.0.0"
+  sdk: ">=3.0.5 <4.0.0"
 dependencies:
   flutter:
     sdk: flutter
 
-  path_provider: ^2.0.11
+  path_provider: ^2.0.15
   flutter_colorpicker: ^1.0.3
-  google_fonts: ^3.0.1
+  google_fonts: ^5.1.0
 
 dev_dependencies:
-  flutter_lints:
+  flutter_lints: ^2.0.2
   flutter_test:
     sdk: flutter
 
